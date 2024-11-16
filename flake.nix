@@ -1,66 +1,46 @@
 {
-  description = "display expo project";
-
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
-    devshell.url = "github:numtide/devshell";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     flake-utils.url = "github:numtide/flake-utils";
-    android.url = "github:tadfisher/android-nixpkgs";
   };
-
-  outputs = { self, nixpkgs, devshell, flake-utils, android }:
-    {
-      overlay = final: prev: {
-        # If u need android studio set up, u should add android-studio to overlay below like:
-        # android-studio
-        inherit (self.packages.${final.system}) android-sdk;
-      };
-    }
-    //
-    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          config.allowUnfree = true;
-          overlays = [
-            devshell.overlay
-            self.overlay
-          ];
+          config = {
+            android_sdk.accept_license = true;
+            allowUnfree = true;
+          };
         };
-
-        androidConfig = {
-          defaultBuildToolsVersion = "31.0.0";
-          sdkPkgs = android.sdk.${system} (sdkPkgs: with sdkPkgs; [
-            # Useful packages for building and testing.
-            # make sure to add defaultBuildToolsVersion
-            build-tools-31-0-0
-            # If when building the apps needs to add other version of build tools, u can add it too
-            build-tools-30-0-3
-            cmdline-tools-latest
-            emulator
-            platform-tools
-            platforms-android-31
-            patcher-v4
-
-            # Other useful packages for a development environment.
-            # sources-android-30
-            # system-images-android-30-google-apis-x86
-            # system-images-android-30-google-apis-playstore-x86
-          ]);
+        androidComposition = pkgs.androidenv.composeAndroidPackages {
+          buildToolsVersions = [ "34.0.0" "33.0.1" ];
+          platformVersions = [ "34" ];
+          abiVersions = [ "x86_64" ];
+          includeEmulator = true;
+          emulatorVersion = "33.1.20";
+          includeSystemImages = true;
+          systemImageTypes = [ "google_apis" ];
+          includeNDK = true;
+          ndkVersions = [ "25.1.8937393" ];
+          cmakeVersions = [ "3.22.1" ];
         };
+        androidSdk = androidComposition.androidsdk;
       in
       {
-        packages = {
-          android-sdk = androidConfig.sdkPkgs;
+        devShell =
+          with pkgs; mkShell {
+            ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
+            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/34.0.0/aapt2";
+            LD_LIBRARY_PATH = "${libglvnd}/lib";
+            buildInputs = [
+              androidSdk
 
-          # If u need android-studio, u can choose one of these channels
-          # Be sure to add it to overlay above
-          # android-studio = pkgs.androidStudioPackages.stable;
-          # android-studio = pkgs.androidStudioPackages.beta;
-          # android-studio = pkgs.androidStudioPackages.preview;
-          # android-studio = pkgs.androidStudioPackage.canary;
-        };
-        devShell = import ./devshell.nix { inherit pkgs androidConfig; };
-      }
-    );
+              nodejs
+              corepack
+              jdk17
+              crudini
+            ];
+          };
+      });
 }
