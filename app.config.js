@@ -12,7 +12,8 @@ module.exports = {
     backgroundColor: "#ffffff"
   },
   ios: {
-    supportsTablet: true
+    supportsTablet: true,
+    bundleIdentifier: "com.domino.display"
   },
   android: {
     package: "com.domino.display",
