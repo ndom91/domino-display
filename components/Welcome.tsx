@@ -1,13 +1,15 @@
 import { Pressable, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
+import { Link } from 'expo-router';
 import tw from "twrnc"
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { setData } from '@/hooks/useAsyncStorage';
 import { useThemeColor } from '@/hooks/useThemeColor';
+// import BluetoothScan from '@/components/BLEScan';
 
-export default function HomeScreen() {
+export default function Welcome() {
   const [isLoading, setIsLoading] = useState(false);
   const [codeText, changeCodeText] = useState('');
   const [ssidText, changeSsidText] = useState('');
@@ -24,7 +26,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <div>
+    <ThemedView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">
           Welcome
@@ -32,7 +34,7 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.subTitleContainer}>
         <ThemedText type="default">
-          You've got a new <a style={tw`text-[${brandColor}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</a>! Now is time to set it up. First, enter your display code below.
+          You've got a new <Link style={tw`text-[${brandContrast}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</Link>! Now is time to set it up. First, enter your display code below.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -93,7 +95,7 @@ export default function HomeScreen() {
           <Text style={tw`font-bold`}>Submit</Text>
         </Pressable>
       </ThemedView>
-    </div>
+    </ThemedView>
   );
 }
 
