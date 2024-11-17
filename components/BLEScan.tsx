@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { Device } from 'react-native-ble-plx'
+import Toast from 'react-native-toast-message';
 
 import Button from "@/components/Button";
 import { ThemedView } from "@/components/ThemedView";
@@ -64,8 +65,13 @@ export default function BluetoothScan() {
           async function scanDevices() {
             try {
               const isSupported = await BLEService.isBleSupported();
+              Toast.show({
+                type: 'success',
+                text1: `BLE Support: ${isSupported}`,
+                text2: '',
+              })
               if (isSupported) {
-                BLEService.initializeBLE().then(() => BLEService.scanDevices(addFoundDevice, [VAPE_UUID, DISPLAY_UUID], true))
+                BLEService.initializeBLE().then(() => BLEService.scanDevices(addFoundDevice, null, true))
               }
             } catch (error) {
               console.log('error', error)
@@ -76,7 +82,7 @@ export default function BluetoothScan() {
         }}
       />
       {foundDevices.map(device => (
-        <div>
+        <ThemedView>
           {isConnecting ? <ActivityIndicator size="small" color='#ccc' /> : null}
           <BleDevice
             onPress={pickedDevice => {
@@ -86,7 +92,7 @@ export default function BluetoothScan() {
             key={device.id}
             device={device}
           />
-        </div>
+        </ThemedView>
       ))}
     </ThemedView>
   )
