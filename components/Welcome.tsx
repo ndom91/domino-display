@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { setData } from '@/hooks/useAsyncStorage';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import Toast from 'react-native-toast-message';
 // import BluetoothScan from '@/components/BLEScan';
 
 export default function Welcome() {
@@ -15,14 +16,22 @@ export default function Welcome() {
   const [ssidText, changeSsidText] = useState('');
   const [passwordText, changePasswordText] = useState('');
 
+  const tint = useThemeColor('tint');
   const brandColor = useThemeColor('brandColor');
   const brandContrast = useThemeColor('brandContrast');
 
   function submitDisplayCode() {
-    if (!codeText || !ssidText || !passwordText) return
+    if (!codeText || !ssidText || !passwordText) {
+      Toast.show({
+        type: 'error',
+        text1: 'Missing Data',
+        text2: 'Please ensure all fields are filled out',
+      })
+    }
     setIsLoading(true)
     console.log('displayCode', codeText)
     setData('displayCode', codeText)
+    setIsLoading(false)
   }
 
   return (
@@ -34,7 +43,7 @@ export default function Welcome() {
       </ThemedView>
       <ThemedView style={styles.subTitleContainer}>
         <ThemedText type="default">
-          You've got a new <Link style={tw`text-[${brandContrast}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</Link>! Now is time to set it up. First, enter your display code below.
+          You've got a new <Link style={tw`text-[${tint}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</Link>! Now is time to set it up. First, enter your display code below.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -88,7 +97,6 @@ export default function Welcome() {
         />
         <Pressable
           onPress={submitDisplayCode}
-          disabled={!isLoading}
           style={tw`rounded-md py-3 bg-[${brandColor}] gap-2 items-center w-full flex flex-row flex-1 justify-center`}
         >
           {isLoading ? <ActivityIndicator size="small" color={brandContrast} /> : null}
