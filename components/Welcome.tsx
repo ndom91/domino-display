@@ -8,7 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { setData } from '@/hooks/useAsyncStorage';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Toast from 'react-native-toast-message';
-// import BluetoothScan from '@/components/BLEScan';
+import BluetoothScan from '@/components/BLEScan';
 
 export default function Welcome() {
   const [isLoading, setIsLoading] = useState(false);
@@ -100,8 +100,9 @@ export default function Welcome() {
           style={tw`rounded-md py-3 bg-[${brandColor}] gap-2 items-center w-full flex flex-row flex-1 justify-center`}
         >
           {isLoading ? <ActivityIndicator size="small" color={brandContrast} /> : null}
-          <Text style={tw`font-bold`}>Submit</Text>
+          <ThemedText style={tw`font-bold`}>Submit</ThemedText>
         </Pressable>
+        <BluetoothScan />
       </ThemedView>
     </ThemedView>
   );
