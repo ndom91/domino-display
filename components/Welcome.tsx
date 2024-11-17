@@ -100,7 +100,7 @@ export default function Welcome() {
           style={tw`rounded-md py-3 bg-[${brandColor}] gap-2 items-center w-full flex flex-row flex-1 justify-center`}
         >
           {isLoading ? <ActivityIndicator size="small" color={brandContrast} /> : null}
-          <ThemedText style={tw`font-bold`}>Submit</ThemedText>
+          <Text style={tw`font-bold`}>Submit</Text>
         </Pressable>
         <BluetoothScan />
       </ThemedView>

@@ -4,7 +4,6 @@ import { Device } from 'react-native-ble-plx'
 
 import Button from "@/components/Button";
 import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
 import { BLEService } from "@/services/BLEService";
 import { cloneDeep } from "@/utils/cloneDeep";
 import { BleDevice } from "@/components/BLEDevice";
@@ -12,8 +11,8 @@ import { BleDevice } from "@/components/BLEDevice";
 type DeviceExtendedByUpdateTime = Device & { updateTimestamp: number }
 
 const MIN_TIME_BEFORE_UPDATE_IN_MILLISECONDS = 5000
-const VAPE_UUID = '6cd6c8b5-e378-0106-000a-1b9740683449'
-const DISPLAY_UUID = '4116f8d2-9f66-4f58-a53d-fc7440e7c14e'
+// const VAPE_UUID = '6cd6c8b5-e378-0106-000a-1b9740683449'
+// const DISPLAY_UUID = '4116f8d2-9f66-4f58-a53d-fc7440e7c14e'
 
 export default function BluetoothScan() {
   const [isConnecting, setIsConnecting] = useState(false)
@@ -24,7 +23,7 @@ export default function BluetoothScan() {
       if (!isFoundDeviceUpdateNecessary(prevState, device)) {
         return prevState
       }
-      // deep clone
+
       const nextState = cloneDeep(prevState)
       const extendedDevice: DeviceExtendedByUpdateTime = {
         ...device,

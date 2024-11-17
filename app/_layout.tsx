@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import tw, { useDeviceContext } from 'twrnc';
 import Toast from 'react-native-toast-message'
 import 'react-native-reanimated';
+import { StatusBar } from 'expo-status-bar';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import "./global.css";
@@ -39,6 +40,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <Toast />
+      <StatusBar style="auto" />
     </ThemeProvider>
   );
 }

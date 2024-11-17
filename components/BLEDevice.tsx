@@ -2,6 +2,7 @@ import React from 'react'
 import { Pressable, StyleSheet } from 'react-native';
 import { Device } from 'react-native-ble-plx'
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 export type DevicePropertyProps = {
   name: string
@@ -10,10 +11,10 @@ export type DevicePropertyProps = {
 
 function DeviceProperty({ name, value }: DevicePropertyProps) {
   return (
-    <div>
+    <ThemedView>
       <ThemedText>{name}:</ThemedText>
-      <ThemedText>{value || '-'}</ThemedText>
-    </div>
+      <ThemedText>{value ?? '-'}</ThemedText>
+    </ThemedView>
   )
 }
 
@@ -44,9 +45,10 @@ export function BleDevice({ device, onPress }: BleDeviceProps) {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: 'red',
-    padding: 4,
-    borderRadius: 8,
-    marginTop: 4
+    borderRadius: 4,
+    borderColor: '#475569',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1
   }
 })
