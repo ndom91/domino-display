@@ -31,6 +31,7 @@ module.exports = {
     "expo-router",
     "react-native-ble-plx",
     "expo-font",
+    "expo-image-picker",
     "expo-dev-launcher",
     [
       'expo-build-properties',
@@ -56,7 +57,7 @@ module.exports = {
         },
         "imageWidth": 200
       }
-    ]
+    ],
   ],
   experiments: {
     "typedRoutes": true

@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import { Pressable, Text, StyleSheet, TextInput, ActivityIndicator, Platform } from 'react-native';
 import { useState } from 'react';
 import { Link } from 'expo-router';
 import tw from "twrnc"
@@ -9,6 +9,7 @@ import { setData } from '@/hooks/useAsyncStorage';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Toast from 'react-native-toast-message';
 import BluetoothScan from '@/components/BLEScan';
+import { ExternalLink } from '@/components/ExternalLink';
 
 export default function Welcome() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,11 +17,12 @@ export default function Welcome() {
   const [ssidText, changeSsidText] = useState('');
   const [passwordText, changePasswordText] = useState('');
 
+  const text = useThemeColor('text');
   const tint = useThemeColor('tint');
   const brandColor = useThemeColor('brandColor');
   const brandContrast = useThemeColor('brandContrast');
 
-  function submitDisplayCode() {
+  async function submitDisplayCode() {
     if (!codeText || !ssidText || !passwordText) {
       Toast.show({
         type: 'error',
@@ -30,7 +32,8 @@ export default function Welcome() {
     }
     setIsLoading(true)
     console.log('displayCode', codeText)
-    setData('displayCode', codeText)
+    await setData('displayCode', codeText)
+    await setData('hasSeenWelcome', true)
     setIsLoading(false)
   }
 
@@ -43,7 +46,7 @@ export default function Welcome() {
       </ThemedView>
       <ThemedView style={styles.subTitleContainer}>
         <ThemedText type="default">
-          You've got a new <Link style={tw`text-[${tint}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</Link>! Now is time to set it up. First, enter your display code below.
+          You've got a new <ExternalLink style={tw`text-[${tint}]`} href="https://github.com/ndom91/domino-display">DominoDisplay</ExternalLink>! Now is time to set it up. First, enter your display code below.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -53,7 +56,7 @@ export default function Welcome() {
             padding: 10,
             borderWidth: 1,
             borderRadius: 4,
-            borderColor: '#475569',
+            borderColor: text,
           })}
           onChangeText={changeCodeText}
           placeholder="2904f0bc-1b89-4f..."
@@ -71,7 +74,7 @@ export default function Welcome() {
             padding: 10,
             borderWidth: 1,
             borderRadius: 4,
-            borderColor: '#475569',
+            borderColor: text,
           })}
           onChangeText={changeSsidText}
           placeholder="my-wifi-01"
@@ -86,7 +89,7 @@ export default function Welcome() {
             padding: 10,
             borderWidth: 1,
             borderRadius: 4,
-            borderColor: '#475569',
+            borderColor: text,
           })}
           onChangeText={changePasswordText}
           placeholder="p4ssw0rd"
@@ -102,7 +105,15 @@ export default function Welcome() {
           {isLoading ? <ActivityIndicator size="small" color={brandContrast} /> : null}
           <Text style={tw`font-bold`}>Submit</Text>
         </Pressable>
-        <BluetoothScan />
+
+        {Platform.select({
+          ios: (
+            <BluetoothScan />
+          ),
+          android: (
+            <BluetoothScan />
+          ),
+        })}
       </ThemedView>
     </ThemedView>
   );

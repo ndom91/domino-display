@@ -10,6 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { getData, setData } from '@/hooks/useAsyncStorage';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Welcome from "@/components/Welcome"
+import Button from '@/components/Button';
 
 export default function HomeScreen() {
   const brandContrast = useThemeColor('brandContrast');
@@ -17,16 +18,19 @@ export default function HomeScreen() {
 
   const [showWelcome, setShowWelcome] = useState(true);
 
-  async function setWelcomeSeen() {
+  async function checkWelcomeSeen() {
     const hasSeenWelcome = await getData('hasSeenWelcome')
-    if (!hasSeenWelcome) {
+    console.log('hasSeenWelcome', hasSeenWelcome)
+    if (hasSeenWelcome) {
+      setShowWelcome(false);
+    } else {
       setShowWelcome(true);
       await setData('hasSeenWelcome', true);
     }
   }
 
   useEffect(() => {
-    setWelcomeSeen()
+    checkWelcomeSeen()
   }, [])
 
   return (
@@ -34,17 +38,17 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: icon, dark: icon }}
       headerImage={
         <Ionicons
-          size={350}
+          size={270}
           name="images-outline"
           color={brandContrast}
-          style={tw`-left-8 bottom-4`}
+          style={tw`-left-4 -bottom-8`}
         />
       }
     >
       {showWelcome ? (
         <Welcome />
       ) : (
-        <div>
+        <ThemedView>
           <ThemedView style={styles.titleContainer}>
             <HelloWave />
             <ThemedText type="title">Current State</ThemedText>
@@ -52,7 +56,8 @@ export default function HomeScreen() {
           <ThemedView style={styles.stepContainer}>
             <ThemedText type="subtitle">Current Display Status</ThemedText>
           </ThemedView>
-        </div>
+          <Button onPress={() => setShowWelcome(true)} title="Refresh" />
+        </ThemedView>
       )}
     </ParallaxScrollView >
   );
